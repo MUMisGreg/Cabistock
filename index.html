@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dental Stock — Gérez votre cabinet en toute sérénité</title>
+  <meta name="description" content="L'application iPhone pensée pour les chirurgiens-dentistes. Suivez vos stocks, scannez vos produits, anticipez les ruptures." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:    #4ECDC4;
+      --teal-d:  #3ab5ad;
+      --blue:    #45B7D1;
+      --danger:  #FF6B6B;
+      --warn:    #F0A500;
+      --success: #96CEB4;
+      --purple:  #C9B1FF;
+      --bg:      #F4F7F9;
+      --card:    #FFFFFF;
+      --text:    #1A2B3C;
+      --muted:   #6B7C8D;
+      --border:  rgba(0,0,0,.07);
+      --radius:  16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+    }
+
+    /* ── NAV ─────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 40px;
+      background: rgba(255,255,255,.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 700; font-size: 18px; color: var(--text); text-decoration: none;
+    }
+    .nav-logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--text); color: #fff;
+      padding: 10px 20px; border-radius: 50px;
+      font-size: 14px; font-weight: 600; text-decoration: none;
+      transition: opacity .2s;
+    }
+    .nav-cta:hover { opacity: .85; }
+
+    /* ── HERO ────────────────────────────── */
+    .hero {
+      text-align: center;
+      padding: 100px 24px 80px;
+      background: linear-gradient(180deg, #fff 0%, var(--bg) 100%);
+      overflow: hidden;
+      position: relative;
+    }
+    .hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(78,205,196,.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--teal); color: #fff;
+      font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      padding: 6px 14px; border-radius: 50px;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 800; line-height: 1.1;
+      letter-spacing: -1px;
+      max-width: 760px; margin: 0 auto 20px;
+    }
+    .hero h1 span { color: var(--teal); }
+    .hero p {
+      font-size: clamp(17px, 2vw, 20px);
+      color: var(--muted); max-width: 560px; margin: 0 auto 40px;
+    }
+    .hero-actions {
+      display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+      color: #fff; font-size: 16px; font-weight: 700;
+      padding: 16px 32px; border-radius: 50px;
+      text-decoration: none; box-shadow: 0 8px 30px rgba(78,205,196,.4);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(78,205,196,.5); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #fff; color: var(--text); font-size: 16px; font-weight: 600;
+      padding: 16px 32px; border-radius: 50px;
+      text-decoration: none; border: 1.5px solid var(--border);
+      box-shadow: 0 2px 12px rgba(0,0,0,.06);
+      transition: transform .2s;
+    }
+    .btn-secondary:hover { transform: translateY(-2px); }
+
+    /* phone mockup */
+    .hero-visual {
+      margin-top: 64px;
+      display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;
+    }
+    .phone-card {
+      background: var(--card);
+      border-radius: 28px;
+      padding: 24px 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.10);
+      border: 1px solid var(--border);
+      width: 200px;
+    }
+    .phone-screen {
+      background: linear-gradient(160deg, #F4F7F9 0%, #EAF1F4 100%);
+      border-radius: 18px; padding: 16px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .screen-title {
+      font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+      color: var(--teal); text-transform: uppercase;
+    }
+    .orbs { display: flex; gap: 8px; }
+    .orb {
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    }
+    .orb-circle {
+      width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800;
+    }
+    .orb-label { font-size: 9px; color: var(--muted); font-weight: 600; }
+    .mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .mini-cat {
+      background: #fff; border-radius: 10px; padding: 8px 6px;
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      border: 1px solid var(--border);
+    }
+    .mini-cat span:first-child { font-size: 16px; }
+    .mini-cat span:last-child { font-size: 8px; font-weight: 600; color: var(--muted); text-align: center; }
+
+    /* ── STATS BAR ───────────────────────── */
+    .stats-bar {
+      display: flex; justify-content: center; gap: 0;
+      background: var(--text); color: #fff;
+      padding: 20px 40px; flex-wrap: wrap;
+    }
+    .stat-item {
+      flex: 1; min-width: 160px; text-align: center; padding: 12px 24px;
+      border-right: 1px solid rgba(255,255,255,.1);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num { font-size: 28px; font-weight: 800; color: var(--teal); }
+    .stat-desc { font-size: 13px; opacity: .7; margin-top: 2px; }
+
+    /* ── SECTION WRAPPER ─────────────────── */
+    section { padding: 80px 24px; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-tag {
+      display: inline-block;
+      font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--teal); margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 42px); font-weight: 800; line-height: 1.15;
+      letter-spacing: -.5px; margin-bottom: 16px;
+    }
+    .section-sub { font-size: 17px; color: var(--muted); max-width: 540px; }
+
+    /* ── FEATURES ────────────────────────── */
+    .features { background: #fff; }
+    .features-grid {
+      margin-top: 56px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .feature-card {
+      background: var(--bg); border-radius: var(--radius);
+      padding: 28px; border: 1px solid var(--border);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.08); }
+    .feature-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin-bottom: 16px;
+    }
+    .feature-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .feature-desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    /* ── CATEGORIES ──────────────────────── */
+    .categories { background: var(--bg); }
+    .cat-grid {
+      margin-top: 48px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 14px;
+    }
+    .cat-chip {
+      background: #fff; border-radius: 14px; padding: 18px 12px;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .cat-chip:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.09); }
+    .cat-chip-icon { font-size: 28px; }
+    .cat-chip-name { font-size: 12px; font-weight: 600; text-align: center; color: var(--text); }
+
+    /* ── ALERTS FEATURE ──────────────────── */
+    .alerts-section { background: #fff; }
+    .alerts-split {
+      margin-top: 56px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center;
+    }
+    @media (max-width: 720px) { .alerts-split { grid-template-columns: 1fr; } }
+    .alert-demo { display: flex; flex-direction: column; gap: 12px; }
+    .alert-row {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--bg); border-radius: 12px; padding: 14px 16px;
+      border: 1px solid var(--border);
+    }
+    .alert-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .alert-text { flex: 1; }
+    .alert-name { font-size: 14px; font-weight: 600; }
+    .alert-sub { font-size: 12px; color: var(--muted); }
+    .alert-badge {
+      font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px;
+    }
+    .alerts-info { display: flex; flex-direction: column; gap: 20px; }
+    .alerts-info h2 { font-size: clamp(24px, 3.5vw, 36px); font-weight: 800; line-height: 1.2; }
+    .alerts-info p { font-size: 15px; color: var(--muted); }
+    .check-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .check-list li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 15px;
+    }
+    .check-list li::before {
+      content: "✓"; font-weight: 800; color: var(--teal);
+      flex-shrink: 0; margin-top: 1px;
+    }
+
+    /* ── HOW IT WORKS ────────────────────── */
+    .how { background: var(--bg); }
+    .steps {
+      margin-top: 56px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 32px; position: relative;
+    }
+    .step { text-align: center; }
+    .step-num {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--teal), var(--blue));
+      color: #fff; font-size: 20px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+      box-shadow: 0 6px 20px rgba(78,205,196,.35);
+    }
+    .step h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+    .step p { font-size: 14px; color: var(--muted); }
+
+    /* ── CTA ─────────────────────────────── */
+    .cta-section {
+      background: linear-gradient(135deg, var(--text) 0%, #2A3F5F 100%);
+      color: #fff; text-align: center; padding: 100px 24px;
+      position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(78,205,196,.15) 0%, transparent 70%);
+    }
+    .cta-section h2 {
+      font-size: clamp(28px, 4vw, 48px); font-weight: 800; margin-bottom: 16px;
+      position: relative;
+    }
+    .cta-section p { font-size: 18px; opacity: .75; margin-bottom: 40px; position: relative; }
+    .cta-actions { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; position: relative; }
+
+    /* ── FOOTER ──────────────────────────── */
+    footer {
+      background: var(--text); color: rgba(255,255,255,.5);
+      text-align: center; padding: 28px 24px;
+      font-size: 13px;
+    }
+    footer span { color: var(--teal); }
+
+    /* ── RESPONSIVE ──────────────────────── */
+    @media (max-width: 600px) {
+      nav { padding: 12px 20px; }
+      .stats-bar { flex-direction: column; }
+      .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,.1); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-icon">🦷</div>
+    Dental Stock
+  </a>
+  <a class="nav-cta" href="#telecharger">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/><path d="M8 12l4 4 4-4M12 8v8"/></svg>
+    Télécharger
+  </a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    Application iPhone pour les chirurgiens-dentistes
+  </div>
+
+  <h1>Gérez votre stock dentaire <span>en toute sérénité</span></h1>
+
+  <p>Inventaire en temps réel, alertes automatiques, scan de codes-barres et suivi des dates de péremption — tout en un.</p>
+
+  <div class="hero-actions">
+    <a class="btn-primary" href="#telecharger">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      Disponible sur l'App Store
+    </a>
+    <a class="btn-secondary" href="#fonctionnalites">
+      Découvrir les fonctionnalités →
+    </a>
+  </div>
+
+  <!-- Simulated phone screens -->
+  <div class="hero-visual">
+    <!-- Dashboard screen -->
+    <div class="phone-card">
+      <div class="phone-screen">
+        <div class="screen-title">Tableau de bord</div>
+        <div class="orbs">
+          <div class="orb">
+            <div class="orb-circle" style="background:rgba(78,205,196,.15);color:#4ECDC4;">47</div>
+            <div class="orb-label">Articles</div>
+          </div>
+          <div class="orb">
+            <div class="orb-circle" style="background:rgba(69,183,209,.15);color:#45B7D1;">3.2k€</div>
+            <div class="orb-label">Valeur</div>
+          </div>
+          <div class="orb">
+            <div class="orb-circle" style="background:rgba(255,107,107,.15);color:#FF6B6B;">2</div>
+            <div class="orb-label">Critique</div>
+          </div>
+        </div>
+        <div class="screen-title" style="margin-top:6px;">Catégories</div>
+        <div class="mini-grid">
+          <div class="mini-cat"><span>🦷</span><span>Composites</span></div>
+          <div class="mini-cat"><span>💉</span><span>Anesthésiques</span></div>
+          <div class="mini-cat"><span>🧤</span><span>Gants</span></div>
+          <div class="mini-cat"><span>⚙️</span><span>Instruments</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scanner screen -->
+    <div class="phone-card" style="display:flex;flex-direction:column;justify-content:center;">
+      <div class="phone-screen" style="align-items:center;">
+        <div class="screen-title">Scanner</div>
+        <div style="width:80px;height:80px;border:2px solid #4ECDC4;border-radius:10px;margin:10px auto;display:flex;align-items:center;justify-content:center;background:rgba(78,205,196,.05);font-size:28px;">📷</div>
+        <div style="font-size:10px;color:var(--muted);text-align:center;">EAN-13 · Code 128 · QR</div>
+        <div style="margin-top:10px;background:rgba(78,205,196,.12);border-radius:8px;padding:8px 10px;width:100%;">
+          <div style="font-size:9px;font-weight:700;color:#4ECDC4;">Code détecté</div>
+          <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:2px;">3700123456789</div>
+          <div style="font-size:9px;color:var(--muted);">Septodont · En stock</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alerts screen -->
+    <div class="phone-card">
+      <div class="phone-screen">
+        <div class="screen-title" style="color:#FF6B6B;">Alertes</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="background:#fff;border-radius:8px;padding:8px;border:1px solid var(--border);">
+            <div style="font-size:10px;font-weight:700;color:var(--text);">Gants nitrile M</div>
+            <div style="font-size:9px;color:#FF6B6B;margin-top:1px;">⛔ Rupture de stock</div>
+          </div>
+          <div style="background:#fff;border-radius:8px;padding:8px;border:1px solid var(--border);">
+            <div style="font-size:10px;font-weight:700;color:var(--text);">Composite A2</div>
+            <div style="font-size:9px;color:#F0A500;margin-top:1px;">🟡 Expire dans 28 j.</div>
+          </div>
+          <div style="background:#fff;border-radius:8px;padding:8px;border:1px solid var(--border);">
+            <div style="font-size:10px;font-weight:700;color:var(--text);">Carpules Scan</div>
+            <div style="font-size:9px;color:#FF6B6B;margin-top:1px;">🔴 Stock critique</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-num">10</div>
+    <div class="stat-desc">Catégories dentaires</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">100%</div>
+    <div class="stat-desc">Données locales, privées</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">0€</div>
+    <div class="stat-desc">Abonnement requis</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">iOS</div>
+    <div class="stat-desc">Native iPhone & iPad</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="fonctionnalites">
+  <div class="section-inner">
+    <div class="section-tag">Fonctionnalités</div>
+    <h2 class="section-title">Tout ce dont votre cabinet a besoin</h2>
+    <p class="section-sub">Conçu spécifiquement pour les chirurgiens-dentistes, avec les catégories et fournisseurs que vous connaissez déjà.</p>
+
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(78,205,196,.15);">📊</div>
+        <div class="feature-title">Tableau de bord en temps réel</div>
+        <div class="feature-desc">Visualisez d'un coup d'œil le nombre d'articles, la valeur totale du stock, les produits en rupture et ceux proches de la péremption.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(69,183,209,.15);">📷</div>
+        <div class="feature-title">Scanner de codes-barres</div>
+        <div class="feature-desc">Scannez EAN-13, EAN-8, Code 128, QR Code et plus. Le produit est identifié instantanément dans votre inventaire, avec possibilité d'ajout direct.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(240,165,0,.15);">🔔</div>
+        <div class="feature-title">Alertes automatiques</div>
+        <div class="feature-desc">Recevez une alerte dès qu'un produit passe sous le seuil minimum, ou que sa date de péremption approche (30 ou 90 jours).</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(150,206,180,.15);">🔬</div>
+        <div class="feature-title">OCR — Lecture de documents</div>
+        <div class="feature-desc">Photographiez un bon de livraison ou une étiquette produit : l'application extrait automatiquement le nom, le fournisseur, le lot et la date de péremption.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(201,177,255,.15);">📋</div>
+        <div class="feature-title">Génération de commande</div>
+        <div class="feature-desc">En un tap, générez la liste des produits à commander avec les quantités nécessaires, prête à envoyer à votre fournisseur.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(255,107,107,.15);">💰</div>
+        <div class="feature-title">Suivi de la valeur du stock</div>
+        <div class="feature-desc">Associez un prix à chaque article et suivez la valeur totale de votre inventaire. Idéal pour optimiser les achats et réduire le gaspillage.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="categories">
+  <div class="section-inner">
+    <div class="section-tag">Catégories</div>
+    <h2 class="section-title">Organisé comme votre cabinet</h2>
+    <p class="section-sub">10 catégories prédéfinies couvrant l'ensemble de vos consommables et fournitures dentaires.</p>
+
+    <div class="cat-grid">
+      <div class="cat-chip"><div class="cat-chip-icon">🦷</div><div class="cat-chip-name">Composites</div></div>
+      <div class="cat-chip"><div class="cat-chip-icon">💉</div><div class="cat-chip-name">Anesthésiques</div></div>
+      <div class="cat-chip"><div class="cat-chip-icon">🧤</div><div class="cat-chip-name">Gants & Protection</div></div>
+      <div class="cat-chip"><div class="cat-chip-icon">⚙️</div><div class="cat-chip-name">Instruments rotatifs</div></div>
+      <div class="cat-chip"><div class="cat-chip-icon">🔬</div><div class="cat-chip-name">Empreintes</div></div>
+      <div class="cat-chip"><div class="cat-chip-icon">📌</div><div class="cat-chip-name">Endodontie</div></div>
+      <div class="cat-chip"><div class="cat-chip-icon">✂️</div><div class="cat-chip-name">Chirurgie</div></div>
+      <div class="cat-chip"><div class="cat-chip-icon">🧴</div><div class="cat-chip-name">Hygiène & Stérilisation</div></div>
+      <div class="cat-chip"><div class="cat-chip-icon">📷</div><div class="cat-chip-name">Radiologie</div></div>
+      <div class="cat-chip"><div class="cat-chip-icon">📦</div><div class="cat-chip-name">Divers</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ALERTS -->
+<section class="alerts-section">
+  <div class="section-inner">
+    <div class="alerts-split">
+      <div class="alert-demo">
+        <div class="alert-row">
+          <div class="alert-dot" style="background:#FF6B6B;box-shadow:0 0 6px rgba(255,107,107,.5);"></div>
+          <div class="alert-text">
+            <div class="alert-name">Gants nitrile taille M</div>
+            <div class="alert-sub">Gants & Protection · 0 unité</div>
+          </div>
+          <div class="alert-badge" style="background:rgba(255,107,107,.12);color:#FF6B6B;">Rupture</div>
+        </div>
+        <div class="alert-row">
+          <div class="alert-dot" style="background:#FF6B6B;box-shadow:0 0 6px rgba(255,107,107,.4);"></div>
+          <div class="alert-text">
+            <div class="alert-name">Carpules Scandonest</div>
+            <div class="alert-sub">Anesthésiques · 3 carpules</div>
+          </div>
+          <div class="alert-badge" style="background:rgba(255,107,107,.12);color:#FF6B6B;">Critique</div>
+        </div>
+        <div class="alert-row">
+          <div class="alert-dot" style="background:#F0A500;"></div>
+          <div class="alert-text">
+            <div class="alert-name">Composite Filtek A2</div>
+            <div class="alert-sub">Expire le 24 avr. 2025</div>
+          </div>
+          <div class="alert-badge" style="background:rgba(240,165,0,.12);color:#F0A500;">28 jours</div>
+        </div>
+        <div class="alert-row">
+          <div class="alert-dot" style="background:#F0A500;opacity:.6;"></div>
+          <div class="alert-text">
+            <div class="alert-name">Film radiologique</div>
+            <div class="alert-sub">Expire le 15 juin 2025</div>
+          </div>
+          <div class="alert-badge" style="background:rgba(240,165,0,.12);color:#F0A500;">80 jours</div>
+        </div>
+      </div>
+
+      <div class="alerts-info">
+        <div class="section-tag">Alertes intelligentes</div>
+        <h2>Ne soyez plus jamais pris au dépourvu</h2>
+        <p>Dental Stock surveille votre stock en permanence et vous avertit avant qu'une situation critique ne se produise.</p>
+        <ul class="check-list">
+          <li>Alerte dès qu'un produit atteint le seuil minimum que vous définissez</li>
+          <li>Avertissement péremption à 90 jours, puis 30 jours</li>
+          <li>Vue dédiée "Alertes" pour traiter toutes les urgences d'un coup</li>
+          <li>Génération automatique du bon de commande des produits en rupture</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:0;">
+      <div class="section-tag">Comment ça marche</div>
+      <h2 class="section-title">Opérationnel en 3 minutes</h2>
+      <p class="section-sub" style="margin:0 auto;">Pas de formation, pas de configuration complexe. Téléchargez et commencez à scanner.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Téléchargez l'app</h3>
+        <p>Disponible sur l'App Store, gratuite pour commencer. Fonctionne sans connexion internet.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Scannez vos produits</h3>
+        <p>Utilisez l'appareil photo de votre iPhone pour scanner les codes-barres de vos produits ou photographiez les étiquettes.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Définissez les seuils</h3>
+        <p>Indiquez la quantité minimale de chaque produit. L'application s'occupe du reste et vous alerte automatiquement.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h3>Commandez en un tap</h3>
+        <p>Générez instantanément la liste de réapprovisionnement et envoyez-la directement à votre fournisseur.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section" id="telecharger">
+  <h2>Prêt à reprendre le contrôle de votre stock ?</h2>
+  <p>Rejoignez les chirurgiens-dentistes qui gèrent leur cabinet plus sereinement.</p>
+  <div class="cta-actions">
+    <a class="btn-primary" href="#">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      Télécharger sur l'App Store
+    </a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>&copy; 2025 <span>Dental Stock</span> — Fait avec ❤️ pour les chirurgiens-dentistes</p>
+</footer>
+
+</body>
+</html>
