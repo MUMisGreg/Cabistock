@@ -295,6 +295,33 @@
     .cta-section p { font-size: 18px; opacity: .75; margin-bottom: 40px; position: relative; }
     .cta-actions { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; position: relative; }
 
+    /* ── WAITLIST FORM ───────────────────── */
+    .waitlist-form {
+      display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+      position: relative; margin-bottom: 14px;
+    }
+    .waitlist-input {
+      padding: 16px 22px; border-radius: 50px;
+      border: none; outline: none;
+      font-size: 15px; width: 300px; max-width: 100%;
+      box-shadow: 0 4px 20px rgba(0,0,0,.2);
+      color: var(--text);
+    }
+    .waitlist-input::placeholder { color: #aaa; }
+    .waitlist-btn { flex-shrink: 0; }
+    .waitlist-note {
+      font-size: 13px; opacity: .5; position: relative; margin-top: 0;
+    }
+    .waitlist-success {
+      display: none;
+      margin-top: 16px;
+      background: rgba(78,205,196,.2); color: var(--teal);
+      border: 1px solid rgba(78,205,196,.4);
+      border-radius: 12px; padding: 14px 24px;
+      font-size: 15px; font-weight: 600;
+      position: relative; display: none;
+    }
+
     /* ── FOOTER ──────────────────────────── */
     footer {
       background: var(--text); color: rgba(255,255,255,.5);
@@ -319,9 +346,8 @@
     <div class="nav-logo-icon">🦷</div>
     Dental Stock
   </a>
-  <a class="nav-cta" href="#telecharger">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/><path d="M8 12l4 4 4-4M12 8v8"/></svg>
-    Télécharger
+  <a class="nav-cta" href="#waitlist">
+    Rejoindre la liste d'attente
   </a>
 </nav>
 
@@ -337,9 +363,8 @@
   <p>Inventaire en temps réel, alertes automatiques, scan de codes-barres et suivi des dates de péremption — tout en un.</p>
 
   <div class="hero-actions">
-    <a class="btn-primary" href="#telecharger">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-      Disponible sur l'App Store
+    <a class="btn-primary" href="#waitlist">
+      Rejoindre la liste d'attente →
     </a>
     <a class="btn-secondary" href="#fonctionnalites">
       Découvrir les fonctionnalités →
@@ -592,15 +617,19 @@
   </div>
 </section>
 
-<!-- CTA -->
-<div class="cta-section" id="telecharger">
-  <h2>Prêt à reprendre le contrôle de votre stock ?</h2>
-  <p>Rejoignez les chirurgiens-dentistes qui gèrent leur cabinet plus sereinement.</p>
-  <div class="cta-actions">
-    <a class="btn-primary" href="#">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-      Télécharger sur l'App Store
-    </a>
+<!-- WAITLIST -->
+<div class="cta-section" id="waitlist">
+  <h2>Soyez parmi les premiers à l'essayer</h2>
+  <p>L'application est en cours de finalisation. Inscrivez-vous pour être notifié dès le lancement.</p>
+  <form class="waitlist-form" onsubmit="handleWaitlist(event)">
+    <input type="email" class="waitlist-input" placeholder="votre@cabinet.fr" required />
+    <button type="submit" class="btn-primary waitlist-btn">
+      Rejoindre la liste d'attente
+    </button>
+  </form>
+  <p class="waitlist-note">Aucun spam. Juste un email au moment du lancement.</p>
+  <div class="waitlist-success" id="waitlist-success">
+    ✓ Vous êtes sur la liste ! On vous contacte dès le lancement.
   </div>
 </div>
 
@@ -609,5 +638,13 @@
   <p>&copy; 2025 <span>Dental Stock</span> — Fait avec ❤️ pour les chirurgiens-dentistes</p>
 </footer>
 
+<script>
+  function handleWaitlist(e) {
+    e.preventDefault();
+    document.querySelector('.waitlist-form').style.display = 'none';
+    document.querySelector('.waitlist-note').style.display = 'none';
+    document.getElementById('waitlist-success').style.display = 'block';
+  }
+</script>
 </body>
 </html>
